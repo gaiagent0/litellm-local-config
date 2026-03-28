@@ -1,0 +1,144 @@
+# LiteLLM Proxy Configuration — Template
+# Copy this to config.yaml and fill in your API keys.
+# NEVER commit config.yaml — it is in .gitignore
+#
+# Free tier sign-up links:
+#   Groq:       https://console.groq.com
+#   Gemini:     https://aistudio.google.com
+#   OpenRouter: https://openrouter.ai
+#   HuggingFace:https://huggingface.co/settings/tokens
+#   Cohere:     https://dashboard.cohere.com
+
+general_settings:
+  master_key: "sk-local-CHANGE_THIS_TO_RANDOM_32_CHARS"
+  # ↑ Used as Bearer token for all proxy API calls
+  # Generate: python3 -c "import secrets; print('sk-local-' + secrets.token_hex(16))"
+
+model_list:
+
+  # ─────────────────────────────────────────────────
+  # TIER 1 — Fastest cloud inference
+  # ─────────────────────────────────────────────────
+
+  - model_name: fast
+    litellm_params:
+      model: groq/llama-3.3-70b-versatile
+      api_key: "YOUR_GROQ_API_KEY"
+      # 14,400 req/day free | 300+ tok/s | Best for: agent loops, quick answers
+
+  - model_name: smart
+    litellm_params:
+      model: gemini/gemini-2.0-flash
+      api_key: "YOUR_GEMINI_API_KEY"
+      # 1,500 req/day free | Excellent reasoning | Best for: analysis, coding
+
+  # ─────────────────────────────────────────────────
+  # TIER 2 — Extended free cloud
+  # ─────────────────────────────────────────────────
+
+  - model_name: cloud-free
+    litellm_params:
+      model: openrouter/meta-llama/llama-3.1-8b-instruct:free
+      api_key: "YOUR_OPENROUTER_API_KEY"
+      # 200 req/day/model free | 29+ free models available
+      # Alternative models: mistralai/mistral-7b-instruct:free
+      #                      google/gemma-2-9b-it:free
+
+  - model_name: hf-free
+    litellm_params:
+      model: huggingface/meta-llama/Llama-3.1-8B-Instruct
+      api_key: "YOUR_HUGGINGFACE_TOKEN"
+      # 1,000 req/hr free | Token needs: Inference Providers + Read public gated repos
+
+  # ─────────────────────────────────────────────────
+  # TIER 3 — Specialized / RAG-optimized
+  # ─────────────────────────────────────────────────
+
+  - model_name: cohere
+    litellm_params:
+      model: command-r-plus
+      api_key: "YOUR_COHERE_TRIAL_KEY"
+      # 20 req/min, 1000 req/month (trial) | Best for: RAG, document Q&A
+
+  - model_name: embed
+    litellm_params:
+      model: cohere/embed-multilingual-v3.0
+      api_key: "YOUR_COHERE_TRIAL_KEY"
+      # Multilingual embedding | 768-dim output
+
+  # ─────────────────────────────────────────────────
+  # LOCAL — Unlimited, privacy-first
+  # ─────────────────────────────────────────────────
+
+  - model_name: local-smart
+    litellm_params:
+      model: ollama/qwen2.5:14b
+      api_base: "http://localhost:11434"
+      # Ollama CPU inference | ARM64 NEON SIMD | Best for: offline, sensitive data
+      # Alternative: ollama/llama3.1:8b (faster, less capable)
+
+  - model_name: local-fast
+    litellm_params:
+      model: ollama/qwen2.5-coder:1.5b
+      api_base: "http://localhost:11434"
+      # Fastest local model | Best for: code autocomplete, quick lookups
+
+  - model_name: local-npu
+    litellm_params:
+      model: openai/llama3.1-8b-8380-qnn2.38
+      api_base: "http://localhost:8912/v1"
+      api_key: "not-required"
+      # GenieAPIService NPU | Hexagon v73 | ~3.9 TPS, 1.4 GB RAM
+      # Snapdragon X Elite only — remove if not using NPU
+      #
+      # IMPORTANT: If running in WSL2, replace localhost with Windows host IP:
+      # api_base: "http://10.255.255.254:8912/v1"   ← WSL2 bridge IP (check after reboot!)
+      # The ip-check.timer script updates this automatically if using the autostart repo.
+
+# ─────────────────────────────────────────────────
+# FALLBACK CHAINS
+# Rate limit (429) or server error (5xx) → auto-route to next model
+# Cooldown: 60 seconds per failed provider
+# ─────────────────────────────────────────────────
+
+router_settings:
+  routing_strategy: "usage-based-routing-v2"
+  num_retries: 2
+  timeout: 30
+  retry_after: 5
+
+  fallbacks:
+    - fast:
+        - smart
+        - cloud-free
+        - local-smart
+
+    - smart:
+        - cloud-free
+        - local-smart
+
+    - cloud-free:
+        - hf-free
+        - local-smart
+
+    - local-npu:
+        - local-smart
+
+# ─────────────────────────────────────────────────
+# PROXY SETTINGS
+# ─────────────────────────────────────────────────
+
+litellm_settings:
+  # Request/response logging (set to false in production for performance)
+  set_verbose: false
+
+  # Drop unsupported params instead of erroring (needed for local models)
+  drop_params: true
+
+  # Request timeout (seconds)
+  request_timeout: 600
+
+  # Cache — reduces redundant API calls for identical prompts
+  # cache: true
+  # cache_params:
+  #   type: "local"

@@ -1,0 +1,33 @@
+[Unit]
+Description=LiteLLM Multi-Provider Proxy
+Documentation=https://github.com/your-username/litellm-local-config
+# Wait for network — relevant for cloud provider health checks at startup
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+# Python virtualenv — adjust path if your venv is elsewhere
+ExecStart=%h/litellm-env/bin/litellm --config %h/litellm/config.yaml --port 4000
+
+WorkingDirectory=%h/litellm
+
+# Restart policy — restart on crash, but not on clean stop
+Restart=on-failure
+RestartSec=10
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+# Environment
+Environment=PYTHONUNBUFFERED=1
+# Uncomment to pass API keys via environment instead of config.yaml:
+# EnvironmentFile=%h/litellm/.env
+
+# Output logging — view with: journalctl --user -u litellm-proxy -f
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=litellm-proxy
+
+[Install]
+WantedBy=default.target

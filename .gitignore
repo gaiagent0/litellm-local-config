@@ -1,0 +1,30 @@
+# ─── CRITICAL: actual config with real API keys ──────────────────────────────
+config/config.yaml
+config.yaml
+*.yaml
+!config/config.yaml.example    # Template is safe to commit
+
+# ─── Environment files ────────────────────────────────────────────────────────
+*.env
+.env*
+litellm.log
+
+# ─── Python runtime ──────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+litellm-env/
+*.egg-info/
+dist/
+
+# ─── OS artifacts ────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── Editor ──────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
