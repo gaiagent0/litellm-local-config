@@ -1,4 +1,4 @@
-# litellm-local-config
+﻿# litellm-local-config
 
 > **LiteLLM proxy configuration for local AI stacks on ARM64 Windows/WSL2**  
 > Unified OpenAI-compatible endpoint · Free tier aggregation · Local NPU/CPU fallback
@@ -187,6 +187,6 @@ litellm-local-config/
 
 ## Related
 
-- [snapdragon-ai-stack](https://github.com/your-username/snapdragon-ai-stack) — Full stack setup
-- [windows-ai-autostart](https://github.com/your-username/windows-ai-autostart) — Autostart automation
+- [snapdragon-ai-stack](https://github.com/gaiagent0/snapdragon-ai-stack) — Full stack setup
+- [windows-ai-autostart](https://github.com/gaiagent0/windows-ai-autostart) — Autostart automation
 - [LiteLLM docs](https://docs.litellm.ai/docs/) — Official documentation

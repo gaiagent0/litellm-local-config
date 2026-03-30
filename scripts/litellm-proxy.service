@@ -1,6 +1,6 @@
 [Unit]
 Description=LiteLLM Multi-Provider Proxy
-Documentation=https://github.com/your-username/litellm-local-config
+Documentation=https://github.com/gaiagent0/litellm-local-config
 # Wait for network — relevant for cloud provider health checks at startup
 After=network-online.target
 Wants=network-online.target
