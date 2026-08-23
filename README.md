@@ -1,4 +1,18 @@
-﻿# litellm-local-config
+﻿> ## ⚠️ DEPRECATED (2026-08-23)
+> Ez az architektúra **megszűnt**. A WSL2 + LiteLLM proxy setupot natív
+> Windows szolgáltatások váltották fel: Ollama (`:11434`), LM Studio
+> (`:1234`), GenieX NPU (`:18181`) — mindegyik közvetlenül, központi proxy
+> nélkül, Tailscale MagicDNS-en keresztül érhető el a homelab többi
+> eszközéről (pl. CT304-en futó Hermes Agent).
+>
+> Ez a repó **történelmi referenciaként** marad, de ne kövesd az itteni
+> telepítési lépéseket új gépen. Az aktuális architektúra leírását lásd:
+> a homelab `ai-platform-os` dokumentációban.
+
+---
+
+
+# litellm-local-config
 
 > **LiteLLM proxy configuration for local AI stacks on ARM64 Windows/WSL2**  
 > Unified OpenAI-compatible endpoint · Free tier aggregation · Local NPU/CPU fallback
